@@ -6,6 +6,8 @@ import { FC, ReactNode, useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import { Head } from '@components/common'
 import { ManagedUIContext } from '@components/ui/context'
+import FirebaseProvider from '@lib/providers/firebase'
+import AppCheckProvider from '@lib/providers/appcheck'
 
 const Noop: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>
 
@@ -17,13 +19,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   }, [])
 
   return (
-    <>
-      <Head />
-      <ManagedUIContext>
-        <Layout pageProps={pageProps}>
-          <Component {...pageProps} />
-        </Layout>
-      </ManagedUIContext>
-    </>
+    <FirebaseProvider>
+      <AppCheckProvider>
+        <Head />
+        <ManagedUIContext>
+          <Layout pageProps={pageProps}>
+            <Component {...pageProps} />
+          </Layout>
+        </ManagedUIContext>
+      </AppCheckProvider>
+    </FirebaseProvider>
   )
 }

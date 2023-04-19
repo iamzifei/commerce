@@ -31,8 +31,8 @@ const CTA: FC<CTAProps> = ({
       'relative h-40 lg:h-80 my-8 md:mt-12 lg:mt-0 lg:grow lg:self-center'
     imageClasses = 'absolute left-0 top-0 w-[57rem] max-w-none bg-white/5'
     imageProps = {
-      width: null as any,
-      height: null as any,
+      width: undefined as any,
+      height: undefined as any,
       fill: true,
     }
   }

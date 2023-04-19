@@ -7,6 +7,14 @@ import { Container, Text, LoadingDots, Button, CTA } from '@components/ui'
 import paintingImage from '@public/painting.jpeg'
 import { useUI } from '@components/ui/context'
 import Image from 'next/image'
+import { StorageProvider, useFirebaseApp, useStorage } from 'reactfire'
+// import { storage } from '@lib/firebase'
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from 'firebase/storage'
 
 interface Prediction {
   id: string
@@ -45,7 +53,7 @@ export default function Room() {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e: any) => {
+  const handlePrediction = async (e: any) => {
     e.preventDefault()
     setIsLoading(true)
     const response = await fetch('/api/predictions', {
@@ -81,6 +89,47 @@ export default function Room() {
     setIsLoading(false)
   }
 
+  const storage = getStorage(useFirebaseApp())
+
+  const [file, setFile] = useState<File>() // progress
+  const [percent, setPercent] = useState(0) // Handle file upload event and update state
+  function handleChange(event: any) {
+    setFile(event.target.files[0])
+  }
+
+  const handleUpload = () => {
+    if (!file) {
+      alert('Please upload an image first!')
+    }
+
+    const storageRef = ref(storage, `/rooms/${file?.name}`)
+    const uploadTask = uploadBytesResumable(storageRef, file as Blob)
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused')
+            break
+          case 'running':
+            console.log('Upload is running')
+            break
+        }
+      },
+      (error) => {
+        console.log(error)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL)
+        })
+      }
+    )
+  }
+
   return (
     <Container className="pt-4">
       {isValidating ? (
@@ -91,7 +140,7 @@ export default function Room() {
         <>
           <Text variant="pageHeading">Create your own...</Text>
           <div>
-            <form className="mb-8" onSubmit={handleSubmit}>
+            <form className="mb-8" onSubmit={handlePrediction}>
               <textarea
                 id="prompt"
                 name="prompt"
@@ -109,6 +158,10 @@ export default function Room() {
               </Button>
             </form>
             {error && <div>{error}</div>}
+
+            <input type="file" onChange={handleChange} accept="/image/*" />
+            <button onClick={handleUpload}>Upload to Firebase</button>
+            <p>{percent} "% done"</p>
 
             {prediction && (
               <div>
@@ -132,15 +185,15 @@ export default function Room() {
             headline="Custom Painting"
             description={
               <>
-                <p>
+                <span>
                   Custom painting can involve working with the client to
                   determine the subject matter, colors, and overall design of
                   the painting, and then creating the artwork according to those
                   specifications. The finished product is typically a unique and
                   personalized piece of art that the client can display and
                   enjoy in their home or office.
-                </p>
-                <p className="mt-6">Please login to see more.</p>
+                </span>
+                <span className="mt-6">Please login to see more.</span>
               </>
             }
             background={paintingImage}
