@@ -1,0 +1,25 @@
+{
+  "title": "Meta Gallery | A.I. Powered Image Gallery",
+  "titleTemplate": "%s - Meta Gallery | A.I. Powered Image Gallery",
+  "description": "Meta Gallery - A.I. Powered Image Gallery - https://www.ametagallery.com",
+  "openGraph": {
+    "title": "Meta Gallery | A.I. Powered Image Gallery",
+    "description": "Meta Gallery - A.I. Powered Image Gallery - https://www.ametagallery.com",
+    "type": "website",
+    "url": "https://www.ametagallery.com",
+    "site_name": "Meta Gallery",
+    "images": [
+      {
+        "url": "/card.png",
+        "width": "800",
+        "height": "600",
+        "alt": "Meta Gallery"
+      }
+    ]
+  },
+  "twitter": {
+    "handle": "@nextjs",
+    "site": "@nextjs",
+    "cardType": "summary_large_image"
+  }
+}

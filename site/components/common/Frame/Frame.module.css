@@ -1,0 +1,22 @@
+.root {
+  @apply relative rounded-sm inline-block border-solid border-[18px] border-accent-2 border-b-accent-0 border-t-accent-3 box-border m-0 p-3 text-center;
+  background-color: #ddc;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25) inset,
+    0 5px 10px 5px rgba(0, 0, 0, 0.25);
+
+  &:before {
+    @apply absolute rounded-sm -bottom-1 -top-1 -left-1 -right-1 content-[''];
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25) inset;
+  }
+  &:after {
+    @apply absolute rounded-sm -bottom-1 -top-1 -left-1 -right-1 content-[''] shadow;
+  }
+}
+
+.img {
+  @apply border-solid border-2 max-w-full max-h-full;
+  border-bottom-color: #ffe;
+  border-left-color: #eed;
+  border-right-color: #eed;
+  border-top-color: #ccb;
+}
