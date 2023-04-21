@@ -12,6 +12,7 @@ const imageHosts = [
   'images.unsplash.com',
   'replicate.delivery',
   'replicate.com',
+  'firebasestorage.googleapis.com',
   '**.tailwindui.com',
   '**.shopify.com',
 ]

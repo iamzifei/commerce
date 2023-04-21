@@ -34,6 +34,8 @@
     "clsx": "^1.1.1",
     "email-validator": "^2.0.4",
     "firebase": "^9.20.0",
+    "flowbite": "^1.6.5",
+    "flowbite-react": "^0.4.3",
     "js-cookie": "^3.0.1",
     "keen-slider": "^6.7.0",
     "lodash.random": "^3.2.0",
@@ -42,8 +44,10 @@
     "next-themes": "^0.2.0",
     "postcss": "^8.3.5",
     "postcss-nesting": "^10.1.10",
+    "re-resizable": "^6.9.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
     "react-fast-marquee": "^1.3.1",
     "react-merge-refs": "^2.0.1",
     "react-use-measure": "^2.1.1",
@@ -67,6 +71,7 @@
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^7.2.3",
     "prettier": "^2.5.1",
+    "prettier-plugin-organize-imports": "^3.2.2",
     "typescript": "4.7.4"
   },
   "lint-staged": {

@@ -1,11 +1,11 @@
-import commerce from '@lib/api/commerce'
 import { Layout } from '@components/common'
 import { ProductCard } from '@components/product'
-import { Grid, Marquee, Hero, TopHero, Button } from '@components/ui'
+import { Button, Grid, Hero, Marquee, TopHero } from '@components/ui'
+import commerce from '@lib/api/commerce'
 import type { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
-import paintingImage from '../public/painting.jpeg'
 import bannerImage from '../public/banner.jpeg'
+import paintingImage from '../public/painting.jpeg'
 
 export async function getStaticProps({
   preview,
@@ -68,6 +68,8 @@ export default function Home({
         headline="Custom Painting"
         description="Custom painting can involve working with the client to determine the subject matter, colors, and overall design of the painting, and then creating the artwork according to those specifications. The finished product is typically a unique and personalized piece of art that the client can display and enjoy in their home or office."
         background={paintingImage}
+        link="/ai?step=1"
+        linkText="Get Started"
       />
       <Marquee variant="primary">
         {products.slice(0, 8).map((product: any, i: number) => (
