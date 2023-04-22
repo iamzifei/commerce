@@ -1,4 +1,4 @@
-import { Frame, Layout } from '@components/common'
+import { BlurImage, Frame, Layout } from '@components/common'
 import { Tick } from '@components/icons'
 import {
   Button,
@@ -21,7 +21,6 @@ import {
 } from 'firebase/storage'
 import { FileInput, Label } from 'flowbite-react'
 import type { GetStaticPropsContext } from 'next'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Resizable } from 're-resizable'
 import { useEffect, useState } from 'react'
@@ -35,6 +34,14 @@ interface Prediction {
   result?: string
   detail?: string
   output?: any[]
+}
+
+interface ImageProps {
+  src: string
+  height?: number
+  width?: number
+  blurDataURL?: string
+  placeholder?: 'blur' | 'empty'
 }
 
 export async function getStaticProps({
@@ -104,7 +111,6 @@ export default function Room() {
         return
       }
       setPrediction(prediction)
-      console.log('inside while loop')
       if (prediction.output) {
         setAiImage(prediction.output[prediction.output.length - 1])
       }
@@ -118,7 +124,9 @@ export default function Room() {
   const [file, setFile] = useState<File>() // progress
   const [uploading, setUploading] = useState(false) // progress
   const [percent, setPercent] = useState(0) // Handle file upload event and update state
-  const [downloadURL, setDownloadURL] = useState<string>()
+  const [roomImage, setRoomImage] = useState<ImageProps>({
+    src: '/room-placeholder.png',
+  })
 
   function handleChange(event: any) {
     setFile(event.target.files[0])
@@ -137,26 +145,28 @@ export default function Room() {
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         setPercent(progress)
-        console.log('Upload is ' + progress + '% done')
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused')
-            break
-          case 'running':
-            console.log('Upload is running')
-            break
-        }
       },
       (error) => {
         console.log(error)
         setUploading(false)
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL)
-          setDownloadURL(downloadURL)
+        getDownloadURL(uploadTask.snapshot.ref).then((roomImage) => {
+          fetch('/api/blurImage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              src: roomImage,
+            }),
+          }).then(async (response) => {
+            const roomProps = await response.json()
+            setRoomImage(roomProps)
+          })
         })
         setUploading(false)
+        setFile(undefined)
       }
     )
   }
@@ -301,13 +311,13 @@ export default function Room() {
                 )}
 
                 <div className="relative my-4">
-                  <Image
-                    alt="room"
-                    src={downloadURL || '/room-placeholder.png'}
-                    className=" left-0 top-0 mx-auto max-w-7xl w-full"
-                    width={2000}
-                    height={2000}
-                    style={{ objectFit: 'contain' }}
+                  <BlurImage
+                    alt="Room Picture"
+                    image={roomImage}
+                    className="left-0 top-0 mx-auto max-w-7xl w-full"
+                    imgProps={{
+                      style: { objectFit: 'contain' },
+                    }}
                   />
 
                   <Draggable

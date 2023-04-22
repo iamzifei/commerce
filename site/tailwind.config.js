@@ -4,7 +4,10 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  plugins: [require('flowbite/plugin')],
+  corePlugins: {
+    aspectRatio: false,
+  },
+  plugins: [require('@tailwindcss/aspect-ratio'), require('flowbite/plugin')],
   safelist: ['outline-none'],
   theme: {
     extend: {
