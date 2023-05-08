@@ -9,6 +9,7 @@ const collectionFragment = /* GraphQL */ `
     seo {
       ...seo
     }
+    updatedAt
   }
   ${seoFragment}
 `;
@@ -36,9 +37,9 @@ export const getCollectionsQuery = /* GraphQL */ `
 `;
 
 export const getCollectionProductsQuery = /* GraphQL */ `
-  query getCollectionProducts($handle: String!, $first: Int = 100) {
+  query getCollectionProducts($handle: String!) {
     collection(handle: $handle) {
-      products(first: $first) {
+      products(first: 100) {
         edges {
           node {
             ...product

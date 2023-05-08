@@ -13,7 +13,7 @@ import {
   getCollectionsQuery
 } from './queries/collection';
 import { getMenuQuery } from './queries/menu';
-import { getPageQuery } from './queries/page';
+import { getPageQuery, getPagesQuery } from './queries/page';
 import {
   getProductQuery,
   getProductRecommendationsQuery,
@@ -36,6 +36,7 @@ import {
   ShopifyCreateCartOperation,
   ShopifyMenuOperation,
   ShopifyPageOperation,
+  ShopifyPagesOperation,
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductRecommendationsOperation,
@@ -256,14 +257,18 @@ export async function getCollection(handle: string): Promise<Collection | undefi
   return reshapeCollection(res.body.data.collection);
 }
 
-export async function getCollectionProducts(handle: string, limit?: number): Promise<Product[]> {
+export async function getCollectionProducts(handle: string): Promise<Product[]> {
   const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
     query: getCollectionProductsQuery,
     variables: {
-      handle,
-      first: limit
+      handle
     }
   });
+
+  if (!res.body.data.collection) {
+    console.log('No collection found for handle', handle);
+    return [];
+  }
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.collection.products));
 }
@@ -280,7 +285,8 @@ export async function getCollections(): Promise<Collection[]> {
         title: 'All',
         description: 'All products'
       },
-      path: '/search'
+      path: '/search',
+      updatedAt: new Date().toISOString()
     },
     // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
@@ -315,6 +321,14 @@ export async function getPage(handle: string): Promise<Page> {
   });
 
   return res.body.data.pageByHandle;
+}
+
+export async function getPages(): Promise<Page[]> {
+  const res = await shopifyFetch<ShopifyPagesOperation>({
+    query: getPagesQuery
+  });
+
+  return removeEdgesAndNodes(res.body.data.pages);
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
